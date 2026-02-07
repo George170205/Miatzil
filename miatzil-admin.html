@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miatzil Admin</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* VARIABLES */
+        :root {
+            --blue-dark: #1e3c72;
+            --blue-mid:  #2a5298;
+            --blue-light: rgb(74, 144, 226);
+            --gradient-main: linear-gradient(180deg, var(--blue-dark) 0%, var(--blue-mid) 50%, var(--blue-light) 100%);
+            --gradient-card: linear-gradient(135deg, var(--blue-light), #2196f3);
+            --text-dark: #2c3e50;
+            --radius-lg: 1.25rem;
+            --shadow-lg: 0 12px 48px rgba(30, 60, 114, 0.18);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--gradient-main);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradient-card);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo span { font-size: 2rem; animation: float 3s ease-in-out infinite; }
+
+        .nav-menu { display: flex; gap: 2rem; list-style: none; }
+        .nav-menu a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0%;
+            height: 3px;
+            background: var(--gradient-card);
+            border-radius: 3px;
+            transition: width .3s ease;
+        }
+
+        .nav-menu a:hover::after { width: 100%; }
+
+        .main-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .year-tab {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .year-tab:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 64px rgba(30, 60, 114, 0.25);
+        }
+
+        .year-tab.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .year-tab h2 { font-size: 2rem; font-weight: 800; }
+
+        .subjects-container {
+            display: none;
+            animation: fadeIn 0.6s ease;
+            margin: 1rem 0 2rem 0;
+        }
+
+        .subjects-container.active { display: block; }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .subject-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+            color: var(--text-dark);
+        }
+
+        .subject-card:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 64px rgba(30, 60, 114, 0.3);
+        }
+
+        .subject-card.selected {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--blue-light);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(74, 144, 226, 0.4);
+        }
+
+        .subject-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .subject-name { font-size: 1.35rem; font-weight: 700; }
+        .subject-lessons { color: #666; font-size: 0.95rem; font-weight: 600; }
+
+        .add-button {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--gradient-card);
+            border: none;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-button:hover {
+            background: linear-gradient(135deg, #2196f3, var(--blue-light));
+            transform: translateY(-4px) scale(1.1);
+        }
+
+        /* CONTENT SECTION */
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.5s ease;
+        }
+
+        .content-section.active { display: block; }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 1rem;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-card);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-button {
+            background: var(--gradient-card);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .content-table th,
+        .content-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            color: var(--text-dark);
+        }
+
+        .content-table th {
+            background: var(--gradient-card);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .content-table tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .content-table tr:nth-child(even) {
+            background: rgba(248, 249, 250, 0.5);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        @keyframes float { 0%,100% {transform:translateY(0);} 50% {transform:translateY(-8px);} }
+        @keyframes fadeIn { from {opacity:0;transform:translateY(30px);} to {opacity:1;transform:translateY(0);} }
+        @keyframes slideIn { from {opacity:0;transform:translateX(-30px);} to {opacity:1;transform:translateX(0);} }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><span>🦎</span>Miatzil Admin</div>
+        <nav class="nav-menu">
+            <a href="#materias">Materias</a>
+            <a href="#preguntas">Preguntas</a>
+            <a href="#usuarios">Usuarios</a>
+            <a href="#administradores">Administradores</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <!-- 1ER AÑO -->
+        <div class="year-tab active" data-year="1"><h2>1er año</h2></div>
+        <div class="subjects-container active" data-year="1">
+            <div class="subjects-grid">
+                <div class="subject-card" data-subject="español">
+                    <div class="subject-icon" style="background:linear-gradient(135deg,#ff7043,#ff5722);">📚</div>
+                    <div class="subject-name">Español</div>
+                    <div class="subject-lessons">8 Lecciones</div>
+                </div>
+                <div class="subject-card" data-subject="lecturas">
+                    <div class="subject-icon" style="background:linear-gradient(135deg,#5c6bc0,#3f51b5);">📖</div>
+                    <div class="subject-name">Lecturas</div>
+                    <div class="subject-lessons">6 Lecciones</div>
+                </div>
+                <div class="subject-card" data-subject="matematicas">
+                    <div class="subject-icon" style="background:linear-gradient(135deg,#26a69a,#009688);">🔢</div>
+                    <div class="subject-name">Matemáticas</div>
+                    <div class="subject-lessons">8 Lecciones</div>
+                </div>
+                <div class="subject-card" data-subject="conocimiento">
+                    <div class="subject-icon" style="background:linear-gradient(135deg,#66bb6a,#4caf50);">🌍</div>
+                    <div class="subject-name">Conocimiento del Medio</div>
+                    <div class="subject-lessons">7 Lecciones</div>
+                </div>
+                <button class="add-button">+</button>
+            </div>
+        </div>
+
+        <!-- CONTENT SECTION -->
+        <div class="content-section" id="content-section">
+            <div class="content-header">
+                <h2 class="content-title" id="content-title">Contenido</h2>
+                <button class="back-button" id="back-button">← Volver a Materias</button>
+            </div>
+            <table class="content-table" id="content-table">
+                <thead>
+                    <tr>
+                        <th>Tema</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="content-tbody">
+                    <!-- Content will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2DO AÑO -->
+        <div class="year-tab" data-year="2"><h2>2do año</h2></div>
+        <div class="subjects-container" data-year="2">
+            <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.8);">
+                <h3>Contenido para 2do año</h3>
+                <p>Próximamente disponible</p>
+            </div>
+        </div>
+
+        <!-- 3ER AÑO -->
+        <div class="year-tab" data-year="3"><h2>3er año</h2></div>
+        <div class="subjects-container" data-year="3">
+            <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.8);">
+                <h3>Contenido para 3er año</h3>
+                <p>Próximamente disponible</p>
+            </div>
+        </div>
+
+        <!-- 4TO AÑO -->
+        <div class="year-tab" data-year="4"><h2>4to año</h2></div>
+        <div class="subjects-container" data-year="4">
+            <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.8);">
+                <h3>Contenido para 4to año</h3>
+                <p>Próximamente disponible</p>
+            </div>
+        </div>
+
+        <!-- 5TO AÑO -->
+        <div class="year-tab" data-year="5"><h2>5to año</h2></div>
+        <div class="subjects-container" data-year="5">
+            <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.8);">
+                <h3>Contenido para 5to año</h3>
+                <p>Próximamente disponible</p>
+            </div>
+        </div>
+
+        <!-- 6TO AÑO -->
+        <div class="year-tab" data-year="6"><h2>6to año</h2></div>
+        <div class="subjects-container" data-year="6">
+            <div style="text-align:center; padding:2rem; color:rgba(255,255,255,0.8);">
+                <h3>Contenido para 6to año</h3>
+                <p>Próximamente disponible</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentYear = '1';
+        let selectedSubject = null;
+
+        // Sample content data for different subjects
+        const subjectContent = {
+            'español': [
+                { tema: 'Reglamento', tipo: 'Lectura', estado: 'Activo' },
+                { tema: 'Exposiciones', tipo: 'Actividad', estado: 'Activo' },
+                { tema: 'Calaveritas Literarias', tipo: 'Escritura', estado: 'Inactivo' },
+                { tema: 'Cuentos', tipo: 'Lectura', estado: 'Activo' },
+                { tema: 'Teatro', tipo: 'Representación', estado: 'Activo' },
+                { tema: 'Infografía', tipo: 'Visual', estado: 'Activo' },
+                { tema: 'Noticias', tipo: 'Lectura', estado: 'Activo' },
+                { tema: 'Poesía', tipo: 'Literatura', estado: 'Borrador' }
+            ],
+            'lecturas': [
+                { tema: 'Comprensión Lectora Nivel 1', tipo: 'Ejercicio', estado: 'Activo' },
+                { tema: 'Cuentos Clásicos', tipo: 'Lectura', estado: 'Activo' },
+                { tema: 'Fábulas', tipo: 'Lectura', estado: 'Activo' },
+                { tema: 'Leyendas Mexicanas', tipo: 'Cultura', estado: 'Activo' },
+                { tema: 'Lectura en Voz Alta', tipo: 'Práctica', estado: 'Inactivo' },
+                { tema: 'Rimas y Trabalenguas', tipo: 'Juegos', estado: 'Activo' }
+            ],
+            'matematicas': [
+                { tema: 'Números del 1 al 100', tipo: 'Conceptos', estado: 'Activo' },
+                { tema: 'Suma y Resta', tipo: 'Operaciones', estado: 'Activo' },
+                { tema: 'Figuras Geométricas', tipo: 'Geometría', estado: 'Activo' },
+                { tema: 'Medición de Tiempo', tipo: 'Medidas', estado: 'Activo' },
+                { tema: 'Monedas y Billetes', tipo: 'Práctica', estado: 'Borrador' },
+                { tema: 'Patrones y Secuencias', tipo: 'Lógica', estado: 'Activo' },
+                { tema: 'Problemas Matemáticos', tipo: 'Aplicación', estado: 'Activo' },
+                { tema: 'Tablas de Multiplicar (Introducción)', tipo: 'Operaciones', estado: 'Inactivo' }
+            ],
+            'conocimiento': [
+                { tema: 'Mi Familia', tipo: 'Social', estado: 'Activo' },
+                { tema: 'Mi Escuela', tipo: 'Social', estado: 'Activo' },
+                { tema: 'Los Seres Vivos', tipo: 'Ciencias', estado: 'Activo' },
+                { tema: 'El Cuerpo Humano', tipo: 'Ciencias', estado: 'Activo' },
+                { tema: 'Los Animales', tipo: 'Ciencias', estado: 'Activo' },
+                { tema: 'Las Plantas', tipo: 'Ciencias', estado: 'Borrador' },
+                { tema: 'Mi Comunidad', tipo: 'Social', estado: 'Activo' }
+            ]
+        };
+
+        // Year tab functionality
+        document.querySelectorAll('.year-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const year = this.dataset.year;
+                document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.subjects-container').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelector(`[data-year="${year}"].subjects-container`).classList.add('active');
+                currentYear = year;
+                selectedSubject = null;
+                hideContentSection();
+            });
+        });
+
+        // Subject card functionality
+        document.querySelectorAll('.subject-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const subject = this.dataset.subject;
+                selectedSubject = subject;
+                
+                // Remove previous selection
+                document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                // Show content section
+                showContentSection(subject);
+            });
+        });
+
+        // Back button functionality
+        document.getElementById('back-button').addEventListener('click', function() {
+            hideContentSection();
+            document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+            selectedSubject = null;
+        });
+
+        function showContentSection(subject) {
+            const contentSection = document.getElementById('content-section');
+            const contentTitle = document.getElementById('content-title');
+            const contentTbody = document.getElementById('content-tbody');
+            
+            // Set title
+            contentTitle.textContent = `Contenido - ${capitalizeFirst(subject)}`;
+            
+            // Clear and populate table
+            contentTbody.innerHTML = '';
+            
+            if (subjectContent[subject]) {
+                subjectContent[subject].forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.tema}</td>
+                        <td>${item.tipo}</td>
+                        <td><span style="color: ${getStatusColor(item.estado)}; font-weight: 600;">${item.estado}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-edit" onclick="editContent('${item.tema}')">Editar</button>
+                                <button class="btn-delete" onclick="deleteContent('${item.tema}')">Eliminar</button>
+                            </div>
+                        </td>
+                    `;
+                    contentTbody.appendChild(row);
+                });
+            }
+            
+            contentSection.classList.add('active');
+        }
+
+        function hideContentSection() {
+            document.getElementById('content-section').classList.remove('active');
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Activo': return '#4caf50';
+                case 'Inactivo': return '#f44336';
+                case 'Borrador': return '#ff9800';
+                default: return '#666';
+            }
+        }
+
+        function editContent(tema) {
+            alert(`Editando: ${tema}`);
+            // Here you would implement the edit functionality
+        }
+
+        function deleteContent(tema) {
+            if (confirm(`¿Estás seguro de que quieres eliminar "${tema}"?`)) {
+                alert(`Eliminado: ${tema}`);
+                // Here you would implement the delete functionality
+            }
+        }
+    </script>
+</body>
+</html>

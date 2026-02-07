@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miatzil - Aprende con tu Axolote</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 50%, #4a90e2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(30, 60, 114, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .axolotl-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4a90e2, #2196f3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3c72, #2196f3);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .streak-counter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 25px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .user-profile:hover {
+            background: #e9ecef;
+            border-color: #4a90e2;
+        }
+        
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4a90e2, #2196f3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        /* Main Content */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .grade-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .grade-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .grade-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+        }
+        
+        /* Progress Bar */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(30, 60, 114, 0.1);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .progress-percentage {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4a90e2;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90e2, #2196f3);
+            border-radius: 6px;
+            width: 0%;
+            transition: width 1s ease;
+            animation: progressFill 2s ease forwards;
+        }
+        
+        @keyframes progressFill {
+            to { width: 42%; }
+        }
+        
+        /* Subjects Path */
+        .subjects-path {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .subject-node {
+            display: flex;
+            align-items: center;
+            position: relative;
+            animation: slideInRight 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .subject-node:nth-child(1) { animation-delay: 0.1s; }
+        .subject-node:nth-child(2) { animation-delay: 0.2s; }
+        .subject-node:nth-child(3) { animation-delay: 0.3s; }
+        .subject-node:nth-child(4) { animation-delay: 0.4s; }
+        .subject-node:nth-child(5) { animation-delay: 0.5s; }
+        .subject-node:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .subject-node:nth-child(even) {
+            flex-direction: row-reverse;
+            animation-name: slideInLeft;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .subject-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 24px;
+            width: 320px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            box-shadow: 0 8px 32px rgba(30, 60, 114, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #4a90e2;
+            box-shadow: 0 16px 40px rgba(74, 144, 226, 0.2);
+        }
+        
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4a90e2, #2196f3);
+        }
+        
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .subject-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subject-icon.espanol { background: linear-gradient(135deg, #ff6b6b, #ff8e8e); }
+        .subject-icon.matematicas { background: linear-gradient(135deg, #4ecdc4, #7bdcb5); }
+        .subject-icon.ciencias { background: linear-gradient(135deg, #95e1d3, #8fbc8f); }
+        .subject-icon.historia { background: linear-gradient(135deg, #ffa726, #ffcc02); }
+        .subject-icon.geografia { background: linear-gradient(135deg, #ba68c8, #d1c4e9); }
+        .subject-icon.ingles { background: linear-gradient(135deg, #5c6bc0, #7986cb); }
+        .subject-icon.formacion { background: linear-gradient(135deg, #ff7043, #ffab91); }
+        .subject-icon.arte { background: linear-gradient(135deg, #ec407a, #f48fb1); }
+        
+        .subject-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .lesson-count {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .topics-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .topic-pill {
+            background: #f8f9fa;
+            color: #495057;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #e9ecef;
+        }
+        
+        .subject-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .progress-mini {
+            flex: 1;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-right: 12px;
+        }
+        
+        .progress-mini-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90e2, #2196f3);
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: #4a90e2;
+        }
+        
+        /* Connection Lines */
+        .subject-node::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(74, 144, 226, 0.3), rgba(33, 150, 243, 0.3));
+            border-radius: 2px;
+        }
+        
+        .subject-node:nth-child(even)::after {
+            left: 320px;
+        }
+        
+        .subject-node:nth-child(odd)::after {
+            right: 320px;
+        }
+        
+        .subject-node:last-child::after {
+            display: none;
+        }
+        
+        /* Floating Bubbles */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            animation: bubble-float 6s infinite linear;
+        }
+        
+        @keyframes bubble-float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 10px;
+            }
+            
+            .subject-card {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .subject-node {
+                justify-content: center;
+            }
+            
+            .subject-node:nth-child(even) {
+                flex-direction: row;
+            }
+            
+            .subject-node::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="nav">
+            <div class="logo">
+                <div class="axolotl-icon">🦎</div>
+                <div class="logo-text">Miatzil</div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="streak-counter">
+                    🔥 <span>7 días</span>
+                </div>
+                <div class="user-profile">
+                    <div class="profile-avatar">GA</div>
+                    <span style="font-weight: 600;">George Albert</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="grade-header">
+            <h1 class="grade-title">Tercer Año de Primaria</h1>
+            <p class="grade-subtitle">Sumérgete en el conocimiento con tu axolote compañero</p>
+        </div>
+        
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <div class="progress-title">Tu progreso en 3er grado</div>
+                <div class="progress-percentage">42% completado</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Subjects Path -->
+        <div class="subjects-path">
+            <div class="subject-node">
+                <div class="subject-card" onclick="openSubject('espanol')">
+                    <div class="subject-header">
+                        <div class="subject-icon espanol">📚</div>
+                        <div class="subject-info">
+                            <h3>Español</h3>
+                            <div class="lesson-count">8 lecciones</div>
+                        </div>
+                    </div>
+                    <div class="topics-preview">
+                        <div class="topic-pill">Ortografía</div>
+                        <div class="topic-pill">Sinónimos</div>
+                        <div class="topic-pill">Adivinanzas</div>
+                    </div>
+                    <div class="subject-progress">
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: 65%;"></div>
+                        </div>
+                        <div class="progress-text">5/8</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-node">
+                <div class="subject-card" onclick="openSubject('matematicas')">
+                    <div class="subject-header">
+                        <div class="subject-icon matematicas">🔢</div>
+                        <div class="subject-info">
+                            <h3>Matemáticas</h3>
+                            <div class="lesson-count">6 lecciones</div>
+                        </div>
+                    </div>
+                    <div class="topics-preview">
+                        <div class="topic-pill">Lógica Matemática</div>
+                        <div class="topic-pill">Mayor/Menor</div>
+                        <div class="topic-pill">Sucesiones</div>
+                    </div>
+                    <div class="subject-progress">
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: 33%;"></div>
+                        </div>
+                        <div class="progress-text">2/6</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-node">
+                <div class="subject-card" onclick="openSubject('ciencias')">
+                    <div class="subject-header">
+                        <div class="subject-icon ciencias">🔬</div>
+                        <div class="subject-info">
+                            <h3>Ciencias Naturales</h3>
+                            <div class="lesson-count">10 lecciones</div>
+                        </div>
+                    </div>
+                    <div class="topics-preview">
+                        <div class="topic-pill">Cuerpo Humano</div>
+                        <div class="topic-pill">Plantas</div>
+                        <div class="topic-pill">Estados de la Materia</div>
+                    </div>
+                    <div class="subject-progress">
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: 20%;"></div>
+                        </div>
+                        <div class="progress-text">2/10</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-node">
+                <div class="subject-card" onclick="openSubject('historia')">
+                    <div class="subject-header">
+                        <div class="subject-icon historia">🏛️</div>
+                        <div class="subject-info">
+                            <h3>Historia</h3>
+                            <div class="lesson-count">8 lecciones</div>
+                        </div>
+                    </div>
+                    <div class="topics-preview">
+                        <div class="topic-pill">Rural/Urbano</div>
+                        <div class="topic-pill">Sectores Productivos</div>
+                        <div class="topic-pill">Nómadas</div>
+                    </div>
+                    <div class="subject-progress">
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-text">0/8</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-node">
+                <div class="subject-card" onclick="openSubject('ingles')">
+                    <div class="subject-header">
+                        <div class="subject-icon ingles">🗣️</div>
+                        <div class="subject-info">
+                            <h3>Inglés</h3>
+                            <div class="lesson-count">12 lecciones</div>
+                        </div>
+                    </div>
+                    <div class="topics-preview">
+                        <div class="topic-pill">Saludos</div>
+                        <div class="topic-pill">Verb to be</div>
+                        <div class="topic-pill">Past Simple</div>
+                    </div>
+                    <div class="subject-progress">
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-text">0/12</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-node">
+                <div class="subject-card" onclick="openSubject('formacion')">
+                    <div class="subject-header">
+                        <div class="subject-icon formacion">⚖️</div>
+                        <div class="subject-info">
+                            <h3>Formación Cívica y Ética</h3>
+                            <div class="lesson-count">6 lecciones</div>
+                        </div>
+                    </div>
+                    <div class="topics-preview">
+                        <div class="topic-pill">Diálogo</div>
+                        <div class="topic-pill">Valores</div>
+                        <div class="topic-pill">3 Poderes</div>
+                    </div>
+                    <div class="subject-progress">
+                        <div class="progress-mini">
+                            <div class="progress-mini-fill" style="width: 50%;"></div>
+                        </div>
+                        <div class="progress-text">3/6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Create floating bubbles
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            
+            const size = Math.random() * 40 + 10;
+            const startPosition = Math.random() * window.innerWidth;
+            
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = startPosition + 'px';
+            bubble.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            
+            document.body.appendChild(bubble);
+            
+            setTimeout(() => {
+                bubble.remove();
+            }, 10000);
+        }
+        
+        // Create bubbles periodically
+        setInterval(createBubble, 3000);
+        
+        // Subject click handler
+        function openSubject(subject) {
+            console.log('Opening subject:', subject);
+            // Aquí irían las lecciones específicas de cada materia
+            alert(`¡Próximamente! Abriendo lecciones de ${subject}`);
+        }
+        
+        // Add hover effects to cards
+        document.querySelectorAll('.subject-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Initialize progress animations
+        setTimeout(() => {
+            document.querySelectorAll('.progress-mini-fill').forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 500);
+            });
+        }, 1000);
+    </script>
+</body>
+</html>

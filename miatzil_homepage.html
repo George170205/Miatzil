@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miatzil – Aprende con tu Axolote</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ───────────────  VARIABLES  ─────────────── */
+        :root {
+            --blue-dark: #1e3c72;
+            --blue-mid:  #2a5298;
+            --blue-light: rgb(74, 144, 226);
+            --gradient-main: linear-gradient(180deg, var(--blue-dark) 0%, var(--blue-mid) 50%, var(--blue-light) 100%);
+            --gradient-card: linear-gradient(135deg, var(--blue-light), #2196f3);
+            --text-dark: #2c3e50;
+            --radius-lg: 1.25rem;
+            --shadow-lg: 0 12px 48px rgba(30, 60, 114, 0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Nunito', sans-serif; background: var(--gradient-main); color: var(--text-dark); }
+
+        /* ───────────────  HEADER / NAV  ─────────────── */
+        header {
+            width: 100%;
+            position: fixed;
+            top: 0; left: 0;
+            background: rgba(255,255,255,.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 20px rgba(0,0,0,.08);
+            z-index: 999;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradient-card);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo span {
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        nav ul { list-style: none; display: flex; gap: 2rem; }
+        nav a {
+            text-decoration: none;
+            font-weight: 600;
+            color: var(--text-dark);
+            position: relative;
+        }
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0; bottom: -4px;
+            width: 0%; height: 3px;
+            background: var(--gradient-card);
+            border-radius: 3px;
+            transition: width .3s ease;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* ───────────────  HERO  ─────────────── */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            color: #fff;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            text-shadow: 0 4px 30px rgba(0,0,0,.25);
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            max-width: 720px;
+            margin-bottom: 2rem;
+        }
+        .cta-btn {
+            background: var(--gradient-card);
+            color: #fff;
+            padding: .9rem 2.2rem;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .cta-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(74, 144, 226, 0.45);
+        }
+
+        /* ───────────────  FEATURES  ─────────────── */
+        .features {
+            background: #fff;
+            padding: 6rem 1rem;
+        }
+        .features-inner { max-width: 1200px; margin: 0 auto; }
+        .features h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--gradient-card);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background: #ffffffee;
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+            transition: transform .3s ease;
+        }
+        .feature-card:hover { transform: translateY(-6px) scale(1.02); }
+        .feature-icon {
+            font-size: 2.5rem;
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            background: var(--gradient-card);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
+        }
+        .feature-card h3 { font-size: 1.35rem; font-weight: 700; color: var(--text-dark); }
+        .feature-card p { font-size: .95rem; color: #555; }
+
+        /* ───────────────  STEPS  ─────────────── */
+        .steps {
+            padding: 6rem 1rem;
+            color: #fff;
+        }
+        .steps-inner { max-width: 1000px; margin: 0 auto; }
+        .steps h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+        }
+        .step-list { display: flex; flex-direction: column; gap: 2.5rem; }
+        .step {
+            display: flex; gap: 1.5rem; align-items: center;
+            background: rgba(255,255,255,.1);
+            padding: 1.5rem 1.25rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(10px);
+        }
+        .step-num {
+            flex-shrink: 0;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-card);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.35rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 14px rgba(74, 144, 226, 0.4);
+        }
+        .step h3 { font-size: 1.2rem; margin-bottom: .25rem; }
+        .step p { font-size: .95rem; }
+
+        /* ───────────────  FOOTER  ─────────────── */
+        footer {
+            background: #ffffffcc;
+            padding: 2rem 1rem;
+            backdrop-filter: blur(8px);
+            text-align: center;
+            font-size: .9rem;
+        }
+        footer a { color: var(--text-dark); font-weight: 600; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ───────────────  KEYFRAMES  ─────────────── */
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* ───────────────  RESPONSIVE  ─────────────── */
+        @media (min-width: 768px) {
+            .step-list { flex-direction: row; }
+            .step { flex: 1; flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ───────────────  NAVBAR  ─────────────── -->
+    <header>
+        <div class="nav-container">
+            <div class="logo"><span>🦎</span>Miatzil</div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Características</a></li>
+                    <li><a href="#como-funciona">Cómo funciona</a></li>
+                    <li><a href="#registrate">Regístrate</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ───────────────  HERO  ─────────────── -->
+    <section class="hero" id="inicio">
+        <h1>¡Aprende jugando con tu Axolote!</h1>
+        <p>Miatzil es la plataforma educativa que convierte cada lección en una aventura submarina. Descubre contenido alineado a tu grado escolar y mejora cada día mientras cuidas a tu axolote.</p>
+        <button class="cta-btn" onclick="document.getElementById('registrate').scrollIntoView({behavior:'smooth'});">Empieza ahora</button>
+    </section>
+
+    <!-- ───────────────  FEATURES  ─────────────── -->
+    <section class="features" id="features">
+        <div class="features-inner">
+            <h2>¿Por qué Miatzil?</h2>
+            <div class="card-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Gamificación</h3>
+                    <p>Rachas, insignias y minijuegos que motivan a los niños a seguir aprendiendo día con día.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Contenido alineado a SEP</h3>
+                    <p>Cada lección está basada en el plan de estudios oficial, garantizando un aprendizaje sólido.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Aprendizaje adaptativo</h3>
+                    <p>El sistema ajusta la dificultad según el ritmo y desempeño del estudiante.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Seguimiento de progreso</h3>
+                    <p>Padres y maestros pueden monitorear el avance con informes claros y detallados.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ───────────────  STEPS  ─────────────── -->
+    <section class="steps" id="como-funciona">
+        <div class="steps-inner">
+            <h2>Así de fácil es comenzar</h2>
+            <div class="step-list">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div>
+                        <h3>Crea tu cuenta</h3>
+                        <p>Regístrate como padre, maestro o estudiante en menos de 2 minutos.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div>
+                        <h3>Elige tu grado</h3>
+                        <p>Accede al contenido específico de tu nivel escolar y tus materias favoritas.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div>
+                        <h3>¡Empieza la aventura!</h3>
+                        <p>Completa lecciones, gana recompensas y observa a tu axolote crecer feliz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ───────────────  CALL‑TO‑ACTION  ─────────────── -->
+    <section class="hero" id="registrate" style="height:auto; padding:6rem 1rem;">
+        <h1>Únete gratis hoy mismo</h1>
+        <p>Crea tu cuenta y empieza a explorar un océano de conocimiento junto a tu axolote.</p>
+        <a href="#" class="cta-btn">Crear cuenta</a>
+    </section>
+
+    <!-- ───────────────  FOOTER  ─────────────── -->
+    <footer>
+        &copy; 2025 Miatzil. Hecho con ❤ en México. | <a href="#">Términos</a> • <a href="#">Privacidad</a>
+    </footer>
+
+</body>
+</html>
